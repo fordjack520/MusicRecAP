@@ -10,7 +10,7 @@ inp = input("Input URL: ")
 
 rec_url = re.search("(?P<url>https?://[^\s]+)", inp).group("url")
 
-return_url = requests.get(rec_url).url
+return_url = requests.get(rec_url, timeout=3.05).url
 
 item = {}
 
