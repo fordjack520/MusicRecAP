@@ -37,7 +37,7 @@ def handle_response(message, author, time, quiet) -> str:
         service = getService()
         sheet = service.spreadsheets()
         
-        values = [[item["type"], item["name"], item["album_artist"], item["year"], item["duration"], item["genre"], author, time, rec_url]]
+        values = [[item["type"], item["name"], item["album_artist"], item["year"], item["duration"], author, time, rec_url]]
 
         body = {'values': values}
         result = sheet.values().append(spreadsheetId=SPREADSHEET_ID, range="main!A2",valueInputOption="RAW", body=body).execute()
