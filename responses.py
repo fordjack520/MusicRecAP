@@ -18,7 +18,7 @@ SPREADSHEET_ID = creds.spreadsheet_id
 
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=creds.client_id, client_secret=creds.client_secret))
 
-def handle_response(message) -> str:
+def handle_response(message, quiet) -> str:
 
     rec_url = re.search("(?P<url>https?://[^\s]+)", message).group("url")
 
@@ -40,7 +40,10 @@ def handle_response(message) -> str:
         body = {'values': values}
         result = sheet.values().append(spreadsheetId=SPREADSHEET_ID, range="main!A2",valueInputOption="RAW", body=body).execute()
 
-        return(f'\"{item["name"]}\" by {item["album_artist"]} has been successfully added to the spreadsheet!')
+        if quiet == False:
+            return(f'\"{item["name"]}\" by {item["album_artist"]} has been successfully added to the spreadsheet!')
+        else:
+            return
 
     except HttpError as error:
         return(f"Could not complete request. {error}")
