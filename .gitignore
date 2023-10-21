@@ -5,3 +5,5 @@ MusicRecAP logo.jpg
 credentials.json
 quickstart.py
 token.json
+__pycache__/bot_redux.cpython-39.pyc
+__pycache__/responses.cpython-39.pyc
