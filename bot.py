@@ -48,6 +48,9 @@ def run_bot():
         if str(ctx.channel) != "music-recs":
             print(f'Full sweep attempted in \"{ctx.channel}\"')
             return
+        if str(ctx.author)[:-2] != "chubbypapaya":
+            print(f'Full sweep attempted by {ctx.author}')
+            return
         counter = 0
         async for message in ctx.channel.history(limit=500):
             if "spotify" in str(message.content):
