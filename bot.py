@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import discord
 from discord.ext import commands
 import responses
@@ -6,8 +6,9 @@ import creds
 
 async def send_message(message, user_message, quiet):
     try:
-        timestamp = message.created_at.strftime("%m/%d/%Y %H:%M:%S")
-        response = responses.handle_response(user_message, str(message.author)[:-2], timestamp, quiet)
+        timestamp = message.created_at - timedelta(hours=8)
+        time = timestamp.strftime("%m/%d/%Y %H:%M:%S")
+        response = responses.handle_response(user_message, str(message.author)[:-2], time, quiet)
         if quiet == False:
             await message.channel.send(response)
 
