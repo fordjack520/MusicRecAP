@@ -26,9 +26,28 @@ def main():
 
     return_url = requests.get(rec_url, timeout=3.05).url
 
-    item = {}
+    item = url_to_item(return_url=return_url)
 
-    # print(return_url)
+    #print (f'This album is {item["album_name"]} ({item["year"]}) by {item["album_artist"]}. It contains {item["number_of_tracks"]} tracks and runs for {item["duration"]}.')
+    #print (f'This is a(n) {item["type"]}.')
+
+    #print(item)
+
+    try:
+        service = getService()
+        sheet = service.spreadsheets()
+        
+        values = [[item["type"], item["name"], item["album_artist"], item["year"], item["duration"], item["genre"], rec_url]]
+
+        body = {'values': values}
+        result = sheet.values().append(spreadsheetId=SPREADSHEET_ID, range="main!A2",valueInputOption="RAW", body=body).execute()
+
+    except HttpError as error:
+        print(error)
+
+def url_to_item(return_url):
+
+    item = {}
 
     if "album" in return_url:
         album = sp.album(return_url)
@@ -60,24 +79,10 @@ def main():
     duration_min, duration_sec = divmod(duration_sec, 60)
     item["duration"] = f"{duration_min:02}:{duration_sec:02}"
 
-    #print (f'This album is {item["album_name"]} ({item["year"]}) by {item["album_artist"]}. It contains {item["number_of_tracks"]} tracks and runs for {item["duration"]}.')
-    #print (f'This is a(n) {item["type"]}.')
-
-    #print(item)
-
-    try:
-        service = getService()
-        sheet = service.spreadsheets()
-        
-        values = [[item["type"], item["name"], item["album_artist"], item["year"], item["duration"], item["genre"], rec_url]]
-
-        body = {'values': values}
-        result = sheet.values().append(spreadsheetId=SPREADSHEET_ID, range="main!A2",valueInputOption="RAW", body=body).execute()
-
-    except HttpError as error:
-        print(error)
+    return item
 
 def getService():
+    
     credentials = None
     if os.path.exists("token.json"):
         credentials = Credentials.from_authorized_user_file("token.json", SCOPES)
