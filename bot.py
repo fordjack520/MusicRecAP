@@ -5,7 +5,8 @@ from discord.ext import commands
 
 async def send_message(message, user_message, quiet):
     try:
-        response = responses.handle_response(user_message, quiet)
+        timestamp = message.created_at
+        response = responses.handle_response(user_message, str(message.author)[:2], timestamp, quiet)
         if quiet == False:
             await message.channel.send(response)
 

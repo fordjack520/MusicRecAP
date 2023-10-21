@@ -2,6 +2,7 @@ import os
 import re
 import spotipy
 import requests
+from datetime import datetime
 
 from spotipy.oauth2 import SpotifyClientCredentials
 from google.auth.transport.requests import Request
@@ -18,7 +19,7 @@ SPREADSHEET_ID = creds.spreadsheet_id
 
 sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=creds.client_id, client_secret=creds.client_secret))
 
-def handle_response(message, quiet) -> str:
+def handle_response(message, author, time, quiet) -> str:
 
     rec_url = re.search("(?P<url>https?://[^\s]+)", message).group("url")
 
@@ -31,11 +32,13 @@ def handle_response(message, quiet) -> str:
 
     #print(item)
 
+    message_time = datetime.strftime(time, "%m/%d/%Y %H:%M:%S")
+
     try:
         service = getService()
         sheet = service.spreadsheets()
         
-        values = [[item["type"], item["name"], item["album_artist"], item["year"], item["duration"], item["genre"], rec_url]]
+        values = [[item["type"], item["name"], item["album_artist"], item["year"], item["duration"], item["genre"], author, message_time, rec_url]]
 
         body = {'values': values}
         result = sheet.values().append(spreadsheetId=SPREADSHEET_ID, range="main!A2",valueInputOption="RAW", body=body).execute()
