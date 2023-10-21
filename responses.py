@@ -2,7 +2,6 @@ import os
 import re
 import spotipy
 import requests
-from datetime import datetime
 
 from spotipy.oauth2 import SpotifyClientCredentials
 from google.auth.transport.requests import Request
@@ -32,13 +31,13 @@ def handle_response(message, author, time, quiet) -> str:
 
     #print(item)
 
-    message_time = datetime.strftime(time, "%m/%d/%Y %H:%M:%S")
+    # message_time = datetime.strftime(time, "%m/%d/%Y %H:%M:%S")
 
     try:
         service = getService()
         sheet = service.spreadsheets()
         
-        values = [[item["type"], item["name"], item["album_artist"], item["year"], item["duration"], item["genre"], author, message_time, rec_url]]
+        values = [[item["type"], item["name"], item["album_artist"], item["year"], item["duration"], item["genre"], author, time, rec_url]]
 
         body = {'values': values}
         result = sheet.values().append(spreadsheetId=SPREADSHEET_ID, range="main!A2",valueInputOption="RAW", body=body).execute()

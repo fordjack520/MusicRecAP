@@ -1,12 +1,13 @@
+from datetime import datetime
 import discord
+from discord.ext import commands
 import responses
 import creds
-from discord.ext import commands
 
 async def send_message(message, user_message, quiet):
     try:
-        timestamp = message.created_at
-        response = responses.handle_response(user_message, str(message.author)[:2], timestamp, quiet)
+        timestamp = message.created_at.strftime("%m/%d/%Y %H:%M:%S")
+        response = responses.handle_response(user_message, str(message.author)[:-2], timestamp, quiet)
         if quiet == False:
             await message.channel.send(response)
 
@@ -43,7 +44,8 @@ def run_bot():
     
     @client.command()
     async def full_sweep(ctx):
-        if ctx.channel != "music-recs":
+        if str(ctx.channel) != "music-recs":
+            print(f'Full sweep attempted in \"{ctx.channel}\"')
             return
         counter = 0
         async for message in ctx.channel.history(limit=500):
@@ -51,5 +53,6 @@ def run_bot():
                 await send_message(message,str(message.content),quiet=True)
                 counter += 1
         await ctx.channel.send(f"{counter} items have been successfully added to the spreadsheet! {ctx.channel}")
+        print(f'Full sweep: {counter} items.')
     
     client.run(TOKEN)
